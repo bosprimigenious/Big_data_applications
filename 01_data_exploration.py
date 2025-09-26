@@ -17,6 +17,9 @@ warnings.filterwarnings('ignore')
 # 设置中文字体
 plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
 plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['figure.dpi'] = 120
+plt.rcParams['savefig.dpi'] = 150
+plt.rcParams['figure.autolayout'] = False
 
 def load_data():
     """加载数据集"""
@@ -26,7 +29,7 @@ def load_data():
         raise FileNotFoundError(f"数据文件不存在: {data_path}")
     
     print(f"正在加载数据: {data_path}")
-    df = pd.read_csv(data_path)
+    df = pd.read_csv(data_path, encoding='utf-8')
     print(f"数据加载完成，形状: {df.shape}")
     
     return df
@@ -137,8 +140,8 @@ def visualize_text_features(df):
     plt.title('文本长度分布对比')
     plt.legend()
     
-    plt.tight_layout()
-    plt.savefig('text_features_analysis.png', dpi=300, bbox_inches='tight')
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
+    plt.savefig('text_features_analysis.png', dpi=300, bbox_inches='tight', pad_inches=0.3)
     plt.show()
     
     print("可视化图表已保存为: text_features_analysis.png")
