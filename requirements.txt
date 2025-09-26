@@ -1,0 +1,20 @@
+# Human vs AI Generated Essays 数据分析项目依赖
+pandas>=1.3.0
+numpy>=1.21.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+scikit-learn>=1.0.0
+
+
+nltk>=3.6.0
+textstat>=0.7.0
+
+tqdm>=4.62.0
+
+# 安装说明：
+# 1. 最小安装（只安装核心功能）：
+#    pip install pandas numpy matplotlib seaborn scikit-learn
+# 2. 完整安装（推荐大家如果要跑完的话就按这个来弄）：
+#    pip install -r requirements.txt
+# 3. 使用conda安装（conda 安装一般建议在pip之前，用不了再pip）：
+#    conda install -c conda-forge pandas numpy matplotlib seaborn scikit-learn nltk textstat tqdm
