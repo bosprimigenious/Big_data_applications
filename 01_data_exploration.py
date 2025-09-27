@@ -14,12 +14,14 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 
-# 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
-plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['figure.dpi'] = 120
-plt.rcParams['savefig.dpi'] = 150
-plt.rcParams['figure.autolayout'] = False
+# 导入图表样式配置和增强可视化
+from plot_style import setup_plot_style, create_beautiful_plot, save_beautiful_plot, apply_theme
+from enhanced_visualization import create_comprehensive_analysis_charts
+from results_exporter import ResultsExporter
+
+# 设置中文字体和图表样式
+setup_plot_style()
+apply_theme('professional')
 
 def load_data():
     """加载数据集"""
@@ -94,13 +96,19 @@ def text_statistics(df):
     return df
 
 def visualize_text_features(df):
-    """可视化文本特征分布"""
+    """可视化文本特征分布 - 使用简单有效的中文字体设置方法"""
     print("\n" + "="*50)
     print("生成文本特征可视化")
     print("="*50)
     
-    # 设置图形大小
-    plt.figure(figsize=(20, 15))
+    # 直接设置中文字体 - 使用和chinese_font_test.png相同的方法
+    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    plt.rcParams['axes.unicode_minus'] = False
+    print("✓ 直接设置中文字体: Microsoft YaHei")
+    
+    # 创建美观的图表
+    fig, axes = plt.subplots(2, 3, figsize=(20, 15))
+    fig.suptitle('文本特征分析 - 人类 vs AI 文本对比', fontsize=18, fontweight='bold', y=0.98)
     
     # 特征列表
     features = ['text_length', 'word_count', 'sentence_count', 'avg_word_length']
@@ -108,43 +116,60 @@ def visualize_text_features(df):
     
     # 创建子图
     for i, (feature, name) in enumerate(zip(features, feature_names), 1):
-        plt.subplot(2, 3, i)
+        ax = axes[(i-1)//3, (i-1)%3]
         
         # 箱线图
-        sns.boxplot(data=df, x='generated', y=feature)
-        plt.title(f'{name} 分布对比')
-        plt.xlabel('文本类型 (0=人类, 1=AI)')
-        plt.ylabel(name)
+        sns.boxplot(data=df, x='generated', y=feature, ax=ax)
+        ax.set_title(f'{name} 分布对比', fontsize=14, fontweight='bold')
+        ax.set_xlabel('文本类型 (0=人类, 1=AI)', fontsize=12)
+        ax.set_ylabel(name, fontsize=12)
         
         # 添加统计信息
         human_mean = df[df['generated'] == 0][feature].mean()
         ai_mean = df[df['generated'] == 1][feature].mean()
-        plt.text(0.5, 0.95, f'人类均值: {human_mean:.1f}\nAI均值: {ai_mean:.1f}', 
-                transform=plt.gca().transAxes, verticalalignment='top',
-                bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+        ax.text(0.5, 0.95, f'人类均值: {human_mean:.1f}\nAI均值: {ai_mean:.1f}', 
+                transform=ax.transAxes, verticalalignment='top',
+                bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7))
     
     # 标签分布饼图
-    plt.subplot(2, 3, 5)
+    ax = axes[1, 1]
     label_counts = df['generated'].value_counts()
     labels = ['人类文本', 'AI文本']
-    colors = ['lightblue', 'lightcoral']
-    plt.pie(label_counts.values, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-    plt.title('数据集标签分布')
+    colors = ['#2E86AB', '#A23B72']
+    wedges, texts, autotexts = ax.pie(label_counts.values, labels=labels, colors=colors, 
+                                     autopct='%1.1f%%', startangle=90)
+    ax.set_title('数据集标签分布', fontsize=14, fontweight='bold')
+    
+    # 美化饼图
+    for autotext in autotexts:
+        autotext.set_color('white')
+        autotext.set_fontweight('bold')
     
     # 文本长度分布直方图
-    plt.subplot(2, 3, 6)
-    plt.hist(df[df['generated'] == 0]['text_length'], bins=30, alpha=0.7, label='人类文本', color='lightblue')
-    plt.hist(df[df['generated'] == 1]['text_length'], bins=30, alpha=0.7, label='AI文本', color='lightcoral')
-    plt.xlabel('文本长度(字符)')
-    plt.ylabel('频次')
-    plt.title('文本长度分布对比')
-    plt.legend()
+    ax = axes[1, 2]
+    ax.hist(df[df['generated'] == 0]['text_length'], bins=30, alpha=0.7, 
+            label='人类文本', color='#2E86AB', edgecolor='black', linewidth=0.5)
+    ax.hist(df[df['generated'] == 1]['text_length'], bins=30, alpha=0.7, 
+            label='AI文本', color='#A23B72', edgecolor='black', linewidth=0.5)
+    ax.set_xlabel('文本长度(字符)', fontsize=12)
+    ax.set_ylabel('频次', fontsize=12)
+    ax.set_title('文本长度分布对比', fontsize=14, fontweight='bold')
+    ax.legend(fontsize=11)
     
-    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.98])
-    plt.savefig('text_features_analysis.png', dpi=300, bbox_inches='tight', pad_inches=0.3)
-    plt.show()
+    # 美化所有子图
+    for ax in axes.flat:
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.grid(True, alpha=0.3)
     
-    print("可视化图表已保存为: text_features_analysis.png")
+    plt.tight_layout(rect=[0.02, 0.02, 0.98, 0.95])
+    
+    # 直接保存图表 - 不使用save_beautiful_plot函数
+    plt.savefig('text_features_analysis.png', dpi=300, bbox_inches='tight', 
+                facecolor='white', edgecolor='none')
+    print("✓ 文本特征分析图表已保存: text_features_analysis.png")
+    
+    plt.close()  # 关闭图表以释放内存
 
 def sample_text_analysis(df):
     """样本文本分析"""
@@ -195,6 +220,19 @@ def main():
         
         # 样本文本分析
         sample_text_analysis(df)
+        
+        # 生成增强可视化图表
+        print("\n" + "="*50)
+        print("生成增强可视化图表")
+        print("="*50)
+        create_comprehensive_analysis_charts(df)
+        
+        # 导出结果
+        print("\n" + "="*50)
+        print("导出分析结果")
+        print("="*50)
+        exporter = ResultsExporter()
+        exporter.export_data_exploration_results(df)
         
         # 保存处理后的数据
         save_processed_data(df)

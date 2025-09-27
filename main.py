@@ -12,6 +12,13 @@ import argparse
 import warnings
 warnings.filterwarnings('ignore')
 
+# 设置中文编码支持
+try:
+    from setup_encoding import setup_chinese_encoding
+    setup_chinese_encoding()
+except:
+    pass
+
 def check_dependencies():
     """检查依赖库"""
     print("检查依赖库...")
@@ -29,7 +36,10 @@ def check_dependencies():
     
     for package in required_packages:
         try:
-            __import__(package)
+            if package == 'scikit-learn':
+                __import__('sklearn')
+            else:
+                __import__(package)
             print(f"  ✓ {package}")
         except ImportError:
             missing_required.append(package)
@@ -86,8 +96,11 @@ def run_data_exploration():
     print("="*60)
     
     try:
-        from 01_data_exploration import main as explore_main
-        return explore_main()
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("data_exploration", "01_data_exploration.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.main()
     except Exception as e:
         print(f"数据探索失败: {e}")
         return False
@@ -99,8 +112,11 @@ def run_feature_engineering():
     print("="*60)
     
     try:
-        from 02_feature_engineering import main as feature_main
-        return feature_main()
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("feature_engineering", "02_feature_engineering.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.main()
     except Exception as e:
         print(f"特征工程失败: {e}")
         return False
@@ -112,8 +128,11 @@ def run_model_training():
     print("="*60)
     
     try:
-        from 03_model_training import main as training_main
-        return training_main()
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("model_training", "03_model_training.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.main()
     except Exception as e:
         print(f"模型训练失败: {e}")
         return False
@@ -125,10 +144,26 @@ def run_model_evaluation():
     print("="*60)
     
     try:
-        from 04_model_evaluation import main as evaluation_main
-        return evaluation_main()
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("model_evaluation", "04_model_evaluation.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.main()
     except Exception as e:
         print(f"模型评估失败: {e}")
+        return False
+
+def generate_research_report():
+    """生成研究报告"""
+    print("\n" + "="*60)
+    print("步骤 5: 生成研究报告")
+    print("="*60)
+    
+    try:
+        from research_report_generator import main as report_main
+        return report_main()
+    except Exception as e:
+        print(f"报告生成失败: {e}")
         return False
 
 def run_complete_pipeline():
@@ -150,7 +185,8 @@ def run_complete_pipeline():
         ("数据探索", run_data_exploration),
         ("特征工程", run_feature_engineering),
         ("模型训练", run_model_training),
-        ("模型评估", run_model_evaluation)
+        ("模型评估", run_model_evaluation),
+        ("生成报告", generate_research_report)
     ]
     
     for step_name, step_func in steps:
@@ -193,7 +229,8 @@ def run_single_step(step):
         'data_exploration': run_data_exploration,
         'feature_engineering': run_feature_engineering,
         'model_training': run_model_training,
-        'model_evaluation': run_model_evaluation
+        'model_evaluation': run_model_evaluation,
+        'generate_report': generate_research_report
     }
     
     if step not in step_functions:
@@ -220,12 +257,13 @@ def main():
   feature_engineering  - 特征工程
   model_training       - 模型训练与比较
   model_evaluation     - 模型评估与深度分析
+  generate_report      - 生成研究报告
         """
     )
     
     parser.add_argument(
         '--step', 
-        choices=['data_exploration', 'feature_engineering', 'model_training', 'model_evaluation'],
+        choices=['data_exploration', 'feature_engineering', 'model_training', 'model_evaluation', 'generate_report'],
         help='指定要执行的单个步骤'
     )
     
