@@ -1,7 +1,0 @@
-=== 数据探索基础统计信息 ===
-
-数据形状: (2750, 6)
-列名: ['text', 'generated', 'text_length', 'word_count', 'sentence_count', 'avg_word_length']
-数据类型: {'text': dtype('O'), 'generated': dtype('int64'), 'text_length': dtype('int64'), 'word_count': dtype('int64'), 'sentence_count': dtype('int64'), 'avg_word_length': dtype('float64')}
-缺失值统计: {'text': 0, 'generated': 0, 'text_length': 0, 'word_count': 0, 'sentence_count': 0, 'avg_word_length': 0}
-标签分布: {1: 1375, 0: 1375}

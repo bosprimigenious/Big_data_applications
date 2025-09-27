@@ -1,7 +1,0 @@
-=== 文本统计特征分析 ===
-
-          text_length                               word_count                             sentence_count                        avg_word_length                                
-                 mean       std   min   max  median       mean       std  min   max median           mean     std min max median            mean     std     min     max  median
-generated                                                                                                                                                                       
-0           3172.5811  918.4392  1486  8436  2987.0   556.7687  159.4935  268  1360  525.0        30.0633  9.7553   8  96   28.0          4.7094  0.2340  3.9742  5.7950  4.7100
-1            169.2647  342.6926    78  2290    95.0    24.7738   49.7851   13   339   14.0         2.5251  2.4786   2  22    2.0          5.8428  0.5408  4.4118  7.5385  5.7857
