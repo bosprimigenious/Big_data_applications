@@ -1,9 +1,16 @@
-{
-    "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda",
-    "python-envs.pythonProjects": [],
-    "workbench.colorCustomizations": {
-        "editor.lineHighlightBackground": "#1073cf2d",
-        "editor.lineHighlightBorder": "#9fced11f"
-    }
+"workbench.colorCustomizations": {
+    "editor.lineHighlightBackground": "#1073cf2d",
+    "editor.lineHighlightBorder": "#9fced11f",
+    // 背景色保留白色，前景色改为深色
+    "activityBar.background": "#FFFFFF",
+    "activityBar.foreground": "#333333", // 深色文字
+    "titleBar.activeBackground": "#FFFFFF",
+    "titleBar.activeForeground": "#333333", // 深色文字
+    "titleBar.inactiveBackground": "#FFFFFF",
+    "titleBar.inactiveForeground": "#666666", // 浅一点的深色，区分未激活状态
+    "tab.inactiveBackground": "#FFFFFF",
+    "tab.activeBackground": "#FFFFFF",
+    "tab.activeForeground": "#333333", // 深色文字
+    "tab.inactiveForeground": "#666666", // 未激活标签用浅深色
+    // 其他配置同理，确保 foreground 与 background 颜色不同
 }
